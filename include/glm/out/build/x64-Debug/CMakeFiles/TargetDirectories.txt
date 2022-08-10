@@ -1,0 +1,4 @@
+D:/MSc/physically-rendering/include/glm/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+D:/MSc/physically-rendering/include/glm/out/build/x64-Debug/CMakeFiles/glm_static.dir
+D:/MSc/physically-rendering/include/glm/out/build/x64-Debug/CMakeFiles/glm_shared.dir
+D:/MSc/physically-rendering/include/glm/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
