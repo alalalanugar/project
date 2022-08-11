@@ -27,9 +27,6 @@ float lastY = 600.0 / 2.0;
 
 bool firstMouse = true;
 
-//Light
-//LightDirectional light = LightDirectional(glm::vec3(10.0f, 10.0f, -5.0f), glm::vec3(glm::radians(45.0f), 0, 0));
-
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -52,6 +49,8 @@ void processInput(GLFWwindow* window)
         camera.ProcessKeyboard(UP, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
         camera.ProcessKeyboard(DOWN, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+        camera.ProcessKeyboard(AUTO, deltaTime);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -208,57 +207,82 @@ int main()
     backgroundShader->use();
     backgroundShader->setInt("environmentMap", 0);
 
-    //const int sphereNum = 9;
-    //std::string inputPath = "resources/textures/pbr";
-    //std::string twoInputPath[] = { "/gold/", "/slipperystonework/", "/ornate-celtic-gold/", "/bamboo-wood-semigloss/", "/wornpaintedcement/", "/paint-peeling/", "/Titanium-Scuffed/", "/wrinkled-paper/", "/test/"};
-    //std::string allTextureName[] = { "albedo.png", "normal.png", "metallic.png", "roughness.png", "ao.png" };
-    //unsigned int sphereMap[sphereNum][5];
+    const int sphereNum = 9;
+    std::string inputPath = "resources/textures/pbr";
+    std::string twoInputPath[] = { "/floor/", "/slipperystonework/", "/ornate-celtic-gold/", "/metal/", "/wornpaintedcement/", "/stonewall/", "/Titanium-Scuffed/", "/wrinkled-paper/", "/rustymetal/"};
+    std::string allTextureName[] = { "albedo.png", "ao.png", "metallic.png", "normal.png", "roughness.png" };
+    unsigned int sphereMap[sphereNum][5];
 
-    //for (int i = 0; i < sphereNum; i++)
-    //{
-    //    std::string tempInputPath = inputPath + twoInputPath[i];
-    //    for (int j = 0; j < 5; j++)
-    //    {
-    //        std::string lastInputPath = tempInputPath + allTextureName[j];
-    //        sphereMap[i][j] = loadImageToGPU(FileCatch::getPath(lastInputPath).c_str());
-    //    }
-    //}
+    for (int i = 0; i < sphereNum; i++)
+    {
+        std::string tempInputPath = inputPath + twoInputPath[i];
+        for (int j = 0; j < 5; j++)
+        {
+            std::string lastInputPath = tempInputPath + allTextureName[j];
+            sphereMap[i][j] = loadImageToGPU(FileCatch::getPath(lastInputPath).c_str());
+        }
+    }
 
-    //stbi_set_flip_vertically_on_load(false);
+    stbi_set_flip_vertically_on_load(false);
 
     //Init model pbr texture
-    //Albedo
-    int grayAlbedo = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/gold/albedo.png").c_str());
-    int lightAlbedo = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/gold/albedo1.png").c_str());
-    int redAlbedo = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/gold/albedo2.png").c_str());
-    int yellowAlbedo = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/gold/albedo3.png").c_str());
-    //Ao
-    int Ao = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/gold/ao.png").c_str());
-    //Metallic
-    int Metallic = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/gold/metallic.png").c_str());
-    //Normal
-    int Normal = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/gold/normal.png").c_str());
-    //Roughness
-    int Roughness = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/gold/roughness.png").c_str());
+    
+    const int modelNum = 3;
+    std::string firPath = "resources/textures/pbr";
+    std::string secPath[] = { "/gray/", "/red/", "/yellow/"};
+    std::string TextureName[] = { "albedo.png", "ao.png", "metallic.png", "normal.png", "roughness.png" };
+    unsigned int modelMap[modelNum][5];
+
+    for (int i = 0; i < modelNum; i++)
+    {
+        std::string InputPath = firPath + secPath[i];
+        for (int j = 0; j < 5; j++)
+        {
+            std::string lastPath = InputPath + TextureName[j];
+            modelMap[i][j] = loadImageToGPU(FileCatch::getPath(lastPath).c_str());
+        }
+    }
 
     //Init model
-    Model* allgray = new Model(FileCatch::getPath("resources/objects/mask/allgray.ply"));
-    Model* alllight = new Model(FileCatch::getPath("resources/objects/mask/alllight.ply"));
-    Model* allred = new Model(FileCatch::getPath("resources/objects/mask/allred.ply"));
-    Model* allyellow = new Model(FileCatch::getPath("resources/objects/mask/allyellow.ply"));
+    Model* gray = new Model(FileCatch::getPath("resources/objects/mk/allgray.ply"));
+    Model* red = new Model(FileCatch::getPath("resources/objects/mk/allred.ply"));
+    Model* yellow = new Model(FileCatch::getPath("resources/objects/mk/allyellow.ply"));
+    Model* modelMum[] = { gray,red,yellow };
+
+    int Albedo = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/albedo.png").c_str());
+    int Ao = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/ao.png").c_str());
+    int Metallic = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/metallic.png").c_str());
+    int Normal = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/normal.png").c_str());
+    int Roughness = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/roughness.png").c_str());
+    Model* helmet = new Model(FileCatch::getPath("resources/objects/mk/helmet.fbx"));
+
+    int lightAlbedo = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/light/albedo.png").c_str());
+    int lightAo = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/light/ao.png").c_str());
+    int lightMetallic = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/light/metallic.png").c_str());
+    int lightNormal = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/light/normal.png").c_str());
+    int lightRoughness = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/light/roughness.png").c_str());
+    Model* alllight = new Model(FileCatch::getPath("resources/objects/mk/alllight.ply"));
 
     //lights
     glm::vec3 lightPositions[] = {
-        glm::vec3(-10.0f,  10.0f, 10.0f),
+        glm::vec3(-10.0f, 10.0f, 10.0f),
         glm::vec3(10.0f,  10.0f, 10.0f),
         glm::vec3(-10.0f, -10.0f, 10.0f),
-        glm::vec3(10.0f, -10.0f, 10.0f)
+        glm::vec3(10.0f, -10.0f, 10.0f),
+        glm::vec3(-10.0f, 10.0f, -10.0f),
+        glm::vec3(10.0f,  10.0f, -10.0f),
+        glm::vec3(-10.0f, -10.0f, -10.0f),
+        glm::vec3(10.0f, -10.0f, -10.0f)
     };
     glm::vec3 lightColors[] = {
-        glm::vec3(100.0f, 100.0f, 100.0f),
-        glm::vec3(100.0f, 100.0f, 100.0f),
-        glm::vec3(100.0f, 100.0f, 100.0f),
-        glm::vec3(100.0f, 100.0f, 100.0f)
+        glm::vec3(500.0f, 500.0f, 500.0f),
+        glm::vec3(0.0f, 0.0f, 500.0f),
+        glm::vec3(0.0f, 500.0f, 0.0f),
+        glm::vec3(500.0f, 0.0f, 0.0f),
+        glm::vec3(500.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 500.0f, 0.0f),
+        glm::vec3(0.0f, 0.0f, 500.0f),
+        glm::vec3(500.0f, 500.0f, 500.0f)
     };
 
     int nrRows = 7;
@@ -293,8 +317,7 @@ int main()
 
         stbi_image_free(data);
     }
-    else
-    {
+    else{
         std::cout << "Failed to load HDR image." << std::endl;
     }
 
@@ -479,7 +502,8 @@ int main()
         processInput(window);
 
         //Clear Screen
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         myPbrShader->use();
@@ -496,61 +520,105 @@ int main()
         glBindTexture(GL_TEXTURE_2D, TexbrdfLUT);
 
         //Set Model
-        glm:: mat4 model = glm::mat4(4.0f);
-        model = glm::translate(model, glm::vec3(0, -2, 0));
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        for (int i = 0; i < modelNum; i++)
+        {
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, modelMap[i][0]);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, modelMap[i][1]);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, modelMap[i][2]);
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D, modelMap[i][3]);
+            glActiveTexture(GL_TEXTURE7);
+            glBindTexture(GL_TEXTURE_2D, modelMap[i][4]);
 
-        setModel(grayAlbedo, Ao, Metallic, Normal, Roughness, myPbrShader, allgray, model);
-        setModel(redAlbedo, Ao, Metallic, Normal, Roughness, myPbrShader, allred, model);
-        setModel(yellowAlbedo, Ao, Metallic, Normal, Roughness, myPbrShader, allyellow, model);
+            glm::mat4 model = glm::mat4(4.0f);
+            model = glm::translate(model, glm::vec3(0, -2, 0));
+            model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+            model = glm::rotate(model, -(float)glfwGetTime(), glm::vec3(0, 0, 1));
+            myPbrShader->setMat4("model", model);
+            setModel(modelMap[i][0], modelMap[i][1], modelMap[i][2], modelMap[i][3], modelMap[i][4], myPbrShader, modelMum[i], model);
+        }
+
+        glm:: mat4 model = glm::mat4(1.5f);
+        model = glm::translate(model, glm::vec3(0, 0, 3));
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1, 0, 0));
+        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0, 1, 0));
+        setModel(Albedo, Ao, Metallic, Normal, Roughness, myPbrShader, helmet, model);
 
         lightShader->use();
-
         lightShader->setVec3("objectColor", 0.4f, 1.0f, 1.0f);
         lightShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-
         view = camera.GetViewMatrix();
         lightShader->setMat4("view", view);
         lightShader->setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
-        setModel(lightAlbedo, Ao, Metallic, Normal, Roughness, lightShader, alllight, model);
+        model = glm::mat4(4.0f);
+        model = glm::translate(model, glm::vec3(0, -2, 0));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model = glm::rotate(model, -(float)glfwGetTime(), glm::vec3(0, 0, 1));
+        setModel(lightAlbedo, lightAo, lightMetallic, lightNormal, lightRoughness, lightShader, alllight, model);
 
+        //Set Sphere
+        //point light
+        const int pointLightNum = 8;
+        const float lightNum = 4.0f;
+        float lightTheta[8] = { 0, PI / lightNum, PI * 2 / lightNum, PI * 3 / lightNum, PI * 4 / lightNum, PI * 5 / lightNum, PI * 6 / lightNum, PI * 7 / lightNum };
 
-        ////Set Sphere
-        //float radian = -glfwGetTime() * 0.4f;
+        for (int i = 0; i < pointLightNum; i++)
+        {
+            lightShader->setVec3("objectColor", lightColors[i].x, lightColors[i].y, lightColors[i].z);
+            lightShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
 
-        //for (int i = 0; i < sphereNum; i++)
-        //{
-        //    glActiveTexture(GL_TEXTURE3);
-        //    glBindTexture(GL_TEXTURE_2D, sphereMap[i][0]);
-        //    glActiveTexture(GL_TEXTURE4);
-        //    glBindTexture(GL_TEXTURE_2D, sphereMap[i][1]);
-        //    glActiveTexture(GL_TEXTURE5);
-        //    glBindTexture(GL_TEXTURE_2D, sphereMap[i][2]);
-        //    glActiveTexture(GL_TEXTURE6);
-        //    glBindTexture(GL_TEXTURE_2D, sphereMap[i][3]);
-        //    glActiveTexture(GL_TEXTURE7);
-        //    glBindTexture(GL_TEXTURE_2D, sphereMap[i][4]);
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(lightPositions[i]));
 
-        //    float x = circleR * cos(theta[i] + radian) * 2;
-        //    float y = circleR * sin(theta[i] + radian) * 2;
+            lightShader->setMat4("model", model);
+            renderSphere();
+        }
+ 
+        //loop
+        float radian = -glfwGetTime() * 0.4f;
 
-        //    glm::mat4 model = glm::mat4(1.0f);
-        //    model = glm::translate(model, glm::vec3(x, 0, y));
-        //    model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, -1.0f, 0.0f));
-        //    myPbrShader->setMat4("model", model);
-        //    renderSphere();
-        //}
+        myPbrShader->use();
+
+        for (int i = 0; i < sphereNum; i++)
+        {
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, sphereMap[i][0]);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, sphereMap[i][1]);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, sphereMap[i][2]);
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D, sphereMap[i][3]);
+            glActiveTexture(GL_TEXTURE7);
+            glBindTexture(GL_TEXTURE_2D, sphereMap[i][4]);
+
+            float x = circleR * cos(theta[i] + radian) * 2;
+            float y = circleR * sin(theta[i] + radian) * 2;
+            
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(x, 0, y));
+            model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, -1.0f, 0.0f));
+            myPbrShader->setMat4("model", model);
+            renderSphere();
+        }
 
         for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
         {
+            //std::cout << sizeof(lightPositions) / sizeof(lightPositions[0]) << endl;
             glm::vec3 newPos = lightPositions[i] + glm::vec3(sin(glfwGetTime() * 5.0) * 5.0, 0.0, 0.0);
             newPos = lightPositions[i];
+            glm::vec3 newColor = lightColors[i];
             myPbrShader->setVec3("lightPositions[" + std::to_string(i) + "]", newPos.x, newPos.y, newPos.z);
-            myPbrShader->setVec3("lightColors[" + std::to_string(i) + "]", lightColors[i].x, lightColors[i].y, lightColors[i].z);
+            myPbrShader->setVec3("lightColors[" + std::to_string(i) + "]", newColor.x, newColor.y, newColor.z);
 
-            model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1, 0, 0));
-            model = glm::scale(model, glm::vec3(0.5f));
+
+            model = glm::mat4(0.5f);
             model = glm::translate(model, newPos);
+            model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(1, 0, 0));
             myPbrShader->setMat4("model", model);
         }
 

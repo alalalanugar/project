@@ -33,15 +33,6 @@
     <ClCompile Include="Shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="LightPoint.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LightSpot.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LightDirectional.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -59,20 +50,8 @@
     <ClInclude Include="Shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="LightPoint.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LightSpot.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LightDirectional.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="background.frag">
-      <Filter>资源文件</Filter>
-    </None>
     <None Include="background.vert">
       <Filter>资源文件</Filter>
     </None>
@@ -101,6 +80,9 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="light.frag">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="background.frag">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
