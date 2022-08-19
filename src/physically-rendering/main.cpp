@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -179,7 +179,7 @@ int main()
     }
 
     //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
+    //glCullFace(GL_FRONT);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     glEnable(GL_DEPTH_TEST);
@@ -249,10 +249,10 @@ int main()
     Model* yellow = new Model(FileCatch::getPath("resources/objects/mk/allyellow.ply"));
     Model* modelMum[] = { gray,red,yellow };
 
-    int Albedo = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/albedo.png").c_str());
-    int Ao = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/ao.png").c_str());
+    int Albedo = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/albedo.jpg").c_str());
+    int Ao = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/ao.jpg").c_str());
     int Metallic = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/metallic.png").c_str());
-    int Normal = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/normal.png").c_str());
+    int Normal = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/normal.jpg").c_str());
     int Roughness = loadImageToGPU(FileCatch::getPath("resources/textures/pbr/helmet/roughness.png").c_str());
     Model* helmet = new Model(FileCatch::getPath("resources/objects/mk/helmet.fbx"));
 
@@ -631,6 +631,19 @@ int main()
         //Clean up, prepare for next render loop
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        static int ticks = -1;
+        ticks++;
+        static double _lastTime = glfwGetTime();
+
+        if (ticks == 60)
+        {
+            double deltaTime = glfwGetTime() - _lastTime;
+            _lastTime = glfwGetTime();
+
+            cout << "FPS:" << ticks / deltaTime << endl;
+            ticks = 0;
+        }
     }
 
     //Exit program
