@@ -158,7 +158,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // glfw window creation
-    GLFWwindow* window = glfwCreateWindow(1980, 1080, "learnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "learnOpenGL", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "OPEN WINDOW FAILED" << std::endl;
@@ -244,8 +244,8 @@ int main()
     }
 
     //Init model
-    Model* gray = new Model(FileCatch::getPath("resources/objects/mk/allgray.ply"));
-    Model* red = new Model(FileCatch::getPath("resources/objects/mk/allred.ply"));
+    Model* gray = new Model(FileCatch::getPath("resources/objects/mk/gray.ply"));
+    Model* red = new Model(FileCatch::getPath("resources/objects/mk/red.ply"));
     Model* yellow = new Model(FileCatch::getPath("resources/objects/mk/allyellow.ply"));
     Model* modelMum[] = { gray,red,yellow };
 
@@ -303,7 +303,12 @@ int main()
     // load pbr
     stbi_set_flip_vertically_on_load(true);
     int width, height, nrChannels;
-    float* data = stbi_loadf(FileCatch::getPath("resources/textures/hdr/venice_sunset_4k.hdr").c_str(), &width, &height, &nrChannels, 0);
+
+    float* data = stbi_loadf(FileCatch::getPath("resources/textures/hdr/venice_sunset_4k.hdr").c_str(), &width, &height, &nrChannels, 0); 
+    //float* data = stbi_loadf(FileCatch::getPath("resources/textures/hdr/LA_Downtown_Afternoon_Fishing_3k.hdr").c_str(), &width, &height, &nrChannels, 0); 
+    //float* data = stbi_loadf(FileCatch::getPath("resources/textures/hdr/Barce_Rooftop_C_3k.hdr").c_str(), &width, &height, &nrChannels, 0);
+    //float* data = stbi_loadf(FileCatch::getPath("resources/textures/hdr/Newport_Loft_Ref.hdr").c_str(), &width, &height, &nrChannels, 0);
+
     unsigned int hdrTexture;
     if (data)
     {
@@ -595,12 +600,15 @@ int main()
             glActiveTexture(GL_TEXTURE7);
             glBindTexture(GL_TEXTURE_2D, sphereMap[i][4]);
 
+            //float x = circleR * cos(theta[i]) * 2;
+            //float y = circleR * sin(theta[i]) * 2;
+
             float x = circleR * cos(theta[i] + radian) * 2;
             float y = circleR * sin(theta[i] + radian) * 2;
-            
 
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(x, 0, y));
+            //model = glm::rotate(model, 0.0f, glm::vec3(0.0f, -1.0f, 0.0f));
             model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, -1.0f, 0.0f));
             myPbrShader->setMat4("model", model);
             renderSphere();
